@@ -8,25 +8,41 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using CortexAccessUtils;
+using System.Collections;
+using System.IO;
 
 namespace MentalMaze
 {
     public partial class Form1 : Form
     {
-
+        private SimpleProcess sp;
         Game game;
-
-        public Form1()
+        private static FileStream OutFileStream;
+        const string OutFilePath = @"TestEmotion.csv";
+        public Form1(SimpleProcess sp)
         {
+            /*
+            if (File.Exists(OutFilePath))
+            {
+
+                File.Delete(OutFilePath);
+            }*/
+            OutFileStream = new FileStream(OutFilePath, FileMode.Append, FileAccess.Write);
+            this.sp = sp;
+
+            sp.P.OnComDataReceived += OnMCEventReceived;
+            sp.P.SessionCtr.OnSubcribeComOK += OnMCEventReceived;
+            sp.P.OnPerfDataReceived += OnMetEventReceived;
+            sp.P.SessionCtr.OnSubcribeMetOK += OnMetEventReceived;
+
+            sp.Subscribe("com");
+            sp.Subscribe("met");
 
             game = new Game();
-
-            InitializeComponent(1200, 800);
-            MentalCommandEventController.OnMCEventReceived += OnMCEventReceived;
+            InitializeComponent(1200, 800);          
 
             drawIronMan();
-
-
         }
 
 
@@ -73,23 +89,48 @@ namespace MentalMaze
 
         }
 
-        private void OnMCEventReceived(object sender, MentalCommandEventType e)
+        private void OnMCEventReceived(object sender, ArrayList data)
         {
-            switch (e)
+            Console.WriteLine((string)data[0]);
+            switch ((string)data[0])
             {
-                case MentalCommandEventType.PUSH:
+                case "push":
                     SendKeys.SendWait("{UP}");
                     break;
-                case MentalCommandEventType.LIFT:
+                case "lift":
                     SendKeys.SendWait("{DOWN}");
                     break;
-                case MentalCommandEventType.LEFT:
+                case "left":
                     SendKeys.SendWait("{LEFT}");
                     break;
-                case MentalCommandEventType.RIGHT:
+                case "right":
                     SendKeys.SendWait("{RIGHT}");
                     break;
             }
+
+        }
+        private static void OnMetEventReceived(object sender, ArrayList eegData)
+        {
+            WriteDataToFile(eegData);
+        }
+        private static void WriteDataToFile(ArrayList data)
+        {
+            //write a row of data to the file
+            int i = 0;
+            for (; i < data.Count; i++)
+            {
+                byte[] val = Encoding.UTF8.GetBytes(data[i].ToString() + ", ");
+
+                if (OutFileStream != null)
+                    OutFileStream.Write(val, 0, val.Length);
+                else
+                    break;
+            }
+
+            //add the current time for each row of data
+            byte[] lastVal = Encoding.UTF8.GetBytes(Utils.GetEpochTimeNowString() + "\n");
+            if (OutFileStream != null)
+                OutFileStream.Write(lastVal, 0, lastVal.Length);
 
         }
     }

@@ -24,9 +24,11 @@ namespace CortexAccess
         public event EventHandler<ArrayList> OnMotionDataReceived;
         public event EventHandler<ArrayList> OnEEGDataReceived;
         public event EventHandler<ArrayList> OnDevDataReceived;
-        public event EventHandler<ArrayList> OnPerfDataReceived;
+        public event EventHandler<ArrayList> OnPerfDataReceived;//met
 
-        public event EventHandler<ArrayList> OnComDataReceived;//implemented by us(the best interns)
+
+        public event EventHandler<ArrayList> OnFacDataReceived;//implemented by us
+        public event EventHandler<ArrayList> OnComDataReceived;//implemented by us
 
 
         // Constructor
@@ -502,7 +504,20 @@ namespace CortexAccess
                     {
                         OnComDataReceived(this, new ArrayList(comData));
                     }
-                    Console.WriteLine("END MENTAL COMMAND DATA RECEIVED-----------------------------------");
+                    break;
+                case (int)StreamID.FACIAL_EXP_DATA_STREAM://this case is implemented by us
+                    Console.WriteLine("Facial expression data received");
+                    ArrayList facData = new ArrayList();
+
+                    JArray jFacData = (JArray)evt.Data["fac"];
+                    foreach (var item in jFacData)
+                    {
+                        facData.Add((string)item);
+                    }
+                    if (facData.Count > 0)
+                    {
+                        OnFacDataReceived(this, new ArrayList(facData));
+                    }
                     break;
                 case (int)StreamID.SYS_STREAM:
                     JArray jSysEvent = (JArray)evt.Data["sys"];

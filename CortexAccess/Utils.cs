@@ -41,5 +41,13 @@ namespace CortexAccess
             return secondsSinceEpoch;
 
         }
+
+        public static string GetEpochTimeNowString()
+        {
+            var epoch = (DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0,
+                DateTimeKind.Utc)).TotalMilliseconds;
+            return new DateTime(1970, 1, 1, 0, 0, 0,
+                DateTimeKind.Utc).AddMilliseconds(epoch).ToString("yyyy-MM-dd HH:mm:ss.fff");
+        }
     }
 }

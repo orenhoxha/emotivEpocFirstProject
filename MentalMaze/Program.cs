@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using CortexAccessUtils;
 
 namespace MentalMaze
 {
@@ -17,9 +18,15 @@ namespace MentalMaze
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            MentalCommandEventController.startListening("ohoxha", "Password123", "636eb076-c25a-4970-9496-351a54464872", "MentalTest1");
-            Application.Run(new Form1());
-            MentalCommandEventController.stopListening();
+
+
+            SimpleProcess sp = new SimpleProcess("ohoxha", "Password123", "636eb076-c25a-4970-9496-351a54464872", "MentalTest1");
+
+
+            Application.Run(new Form1(sp));
+
+            sp.Unsubscribe();            
+            //MentalCommandEventController.stopListening();
 
         }
     }

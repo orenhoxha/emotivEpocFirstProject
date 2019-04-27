@@ -48,6 +48,8 @@ namespace CortexAccess
         public event EventHandler<ArrayList> OnSubcribeMetOK;
 
         public event EventHandler<ArrayList> OnSubcribeComOK;//implemented by us
+        public event EventHandler<ArrayList> OnSubcribeFacOK;//implemented by us
+
 
         // Constructor
         // Constructor
@@ -399,6 +401,7 @@ namespace CortexAccess
                             }
                             else if (item["met"] != null) // Performance Metrics
                             {
+                                Console.WriteLine("OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
                                 ArrayList metChannelLists = new ArrayList();
                                 JArray cols = (JArray)item["met"]["cols"];
                                 foreach (var chanItem in cols)
@@ -421,6 +424,19 @@ namespace CortexAccess
                                 if (comChannelLists.Count > 0)
                                 {
                                     OnSubcribeComOK(this, comChannelLists);
+                                }
+                            }
+                            else if (item["fac"] != null) // implemented by us
+                            {
+                                ArrayList facChannelLists = new ArrayList();
+                                JArray cols = (JArray)item["fac"]["cols"];
+                                foreach (var chanItem in cols)
+                                {
+                                    facChannelLists.Add((string)chanItem);
+                                }
+                                if (facChannelLists.Count > 0)
+                                {
+                                    OnSubcribeFacOK(this, facChannelLists);
                                 }
                             }
                         }
