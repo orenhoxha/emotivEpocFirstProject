@@ -26,7 +26,7 @@
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
-        private void InitializeComponent(int width, int height)
+        private void InitializeComponent()
         {
             this.ironManIcon = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.ironManIcon)).BeginInit();
@@ -36,7 +36,7 @@
             // 
             this.ironManIcon.BackColor = System.Drawing.Color.Transparent;
             this.ironManIcon.Image = global::MentalMaze.Properties.Resources.iconfinder_ironman_III_52378;
-            this.ironManIcon.Location = new System.Drawing.Point(40, 40);
+            this.ironManIcon.Location = new System.Drawing.Point(311, 116);
             this.ironManIcon.Name = "ironManIcon";
             this.ironManIcon.Size = new System.Drawing.Size(40, 40);
             this.ironManIcon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -46,14 +46,16 @@
             // Form1
             // 
             this.BackgroundImage = global::MentalMaze.Properties.Resources.superMaze;
-            this.ClientSize = new System.Drawing.Size(1200, 800);
+            this.ClientSize = new System.Drawing.Size(1146, 637);
             this.Controls.Add(this.ironManIcon);
+            this.DoubleBuffered = true;
             this.Name = "Form1";
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyDown);
             ((System.ComponentModel.ISupportInitialize)(this.ironManIcon)).EndInit();
             this.ResumeLayout(false);
 
         }
+
 
         #endregion
 

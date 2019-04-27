@@ -20,6 +20,11 @@ namespace MentalMaze
         Game game;
         private static FileStream OutFileStream;
         const string OutFilePath = @"TestEmotion.csv";
+
+
+      
+
+
         public Form1(SimpleProcess sp)
         {
             /*
@@ -40,8 +45,11 @@ namespace MentalMaze
             sp.Subscribe("met");
 
             game = new Game();
-            InitializeComponent(1200, 800);          
+            InitializeComponent();
+            this.ClientSize = new System.Drawing.Size(1200, 800);
 
+
+            
             drawIronMan();
         }
 
@@ -133,5 +141,7 @@ namespace MentalMaze
                 OutFileStream.Write(lastVal, 0, lastVal.Length);
 
         }
+
+   
     }
 }
