@@ -22,7 +22,12 @@ namespace MentalMaze
         const string OutFilePath = @"TestEmotion.csv";
 
 
-      
+        private bool isMovingUP = false;
+        private bool isMovingDOWN = false;
+        private bool isMovingLEFT = false;
+        private bool isMovingRIGHT = false;
+
+
 
 
         public Form1(SimpleProcess sp)
@@ -67,7 +72,8 @@ namespace MentalMaze
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
-            
+            //if (isMoving) return;
+            /*
             switch (e.KeyCode)
             {
                 case Keys.Up:
@@ -84,7 +90,38 @@ namespace MentalMaze
                     break;
             }
 
+            */
+
             
+            switch (e.KeyCode)
+            {
+                case Keys.Up:
+                    if (isMovingUP) return;
+                    isMovingUP = true;
+                    game.move(0, -1);
+                    timerUP.Start();
+                    break;
+                case Keys.Down:
+                    if (isMovingDOWN) return;
+                    isMovingDOWN = true;
+                    game.move(0, 1);
+                    timerDOWN.Start();
+                    break;
+                case Keys.Left:
+                    if (isMovingLEFT) return;
+                    isMovingLEFT = true;
+                    game.move(-1, 0);
+                    timerLEFT.Start();
+                    break;
+                case Keys.Right:
+                    if (isMovingRIGHT) return;
+                    isMovingRIGHT = true;
+                    game.move(1, 0);
+                    timerRIGHT.Start();
+                    break;
+            }
+
+
 
             if (game.HasWon)
             {
@@ -142,6 +179,53 @@ namespace MentalMaze
 
         }
 
-   
+        private void timerUP_Tick(object sender, EventArgs e)
+        {
+            game.move(0, -1);
+            drawIronMan();
+        }
+
+        private void timerDOWN_Tick(object sender, EventArgs e)
+        {
+            game.move(0, 1);
+            drawIronMan();
+        }
+
+        private void timerRIGHT_Tick(object sender, EventArgs e)
+        {
+            game.move(1, 0);
+            drawIronMan();
+        }
+
+        private void timerLEFT_Tick(object sender, EventArgs e)
+        {
+            game.move(-1, 0);
+            drawIronMan();
+        }
+
+        private void Form1_KeyUp(object sender, KeyEventArgs e)
+        {
+           // isMoving = false;
+
+            switch (e.KeyCode)
+            {
+                case Keys.Up:
+                    isMovingUP = false;
+                    timerUP.Stop();
+                    break;
+                case Keys.Down:
+                    isMovingDOWN = false;
+                    timerDOWN.Stop();
+                    break;
+                case Keys.Left:
+                    isMovingLEFT = false;
+                    timerLEFT.Stop();
+                    break;
+                case Keys.Right:
+                    isMovingRIGHT = false;
+                    timerRIGHT.Stop();
+                    break;
+            }
+        }
     }
 }
