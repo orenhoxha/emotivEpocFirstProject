@@ -23,6 +23,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CortexAccessUtils", "Cortex
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SessionsTests", "SessionsTests\SessionsTests.csproj", "{B2CCA5B9-2436-49D2-9E21-92EA6E82856A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheMindGame", "TheMindGame\TheMindGame.csproj", "{22D79430-23CB-4A9E-B4AB-F52C426F1E16}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug_Ubuntu|Any CPU = Debug_Ubuntu|Any CPU
@@ -111,6 +113,14 @@ Global
 		{B2CCA5B9-2436-49D2-9E21-92EA6E82856A}.Release_Ubuntu|Any CPU.Build.0 = Release|Any CPU
 		{B2CCA5B9-2436-49D2-9E21-92EA6E82856A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B2CCA5B9-2436-49D2-9E21-92EA6E82856A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{22D79430-23CB-4A9E-B4AB-F52C426F1E16}.Debug_Ubuntu|Any CPU.ActiveCfg = Debug|Any CPU
+		{22D79430-23CB-4A9E-B4AB-F52C426F1E16}.Debug_Ubuntu|Any CPU.Build.0 = Debug|Any CPU
+		{22D79430-23CB-4A9E-B4AB-F52C426F1E16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{22D79430-23CB-4A9E-B4AB-F52C426F1E16}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{22D79430-23CB-4A9E-B4AB-F52C426F1E16}.Release_Ubuntu|Any CPU.ActiveCfg = Release|Any CPU
+		{22D79430-23CB-4A9E-B4AB-F52C426F1E16}.Release_Ubuntu|Any CPU.Build.0 = Release|Any CPU
+		{22D79430-23CB-4A9E-B4AB-F52C426F1E16}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{22D79430-23CB-4A9E-B4AB-F52C426F1E16}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

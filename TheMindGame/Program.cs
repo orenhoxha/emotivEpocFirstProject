@@ -1,15 +1,19 @@
-﻿using CortexAccess;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using CortexAccessUtils;
 
-namespace MentalMaze
+namespace TheMindGame
 {
     static class Program
     {
+
+
+        public static string projectPath = Directory.GetParent(Directory.GetParent(Directory.GetCurrentDirectory()).FullName).FullName;
+        public static string resourcesPath = Path.Combine(projectPath, "Resources");
+        public static MainMenu mainMenu;
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
@@ -18,16 +22,7 @@ namespace MentalMaze
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-
-
-            SimpleProcess sp = new SimpleProcess("ohoxha", "Password123", "636eb076-c25a-4970-9496-351a54464872", "OrenMental");
-
-
-            Application.Run(new Form1(sp));
-
-            sp.Unsubscribe();            
-            //MentalCommandEventController.stopListening();
-
+            Application.Run(mainMenu = new MainMenu());
         }
     }
 }

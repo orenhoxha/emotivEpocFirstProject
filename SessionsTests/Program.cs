@@ -7,6 +7,7 @@ using CortexAccessUtils;
 using System.Collections;
 using System.IO;
 using CortexAccess;
+using System.Threading;
 
 namespace SessionsTests
 {
@@ -29,9 +30,14 @@ namespace SessionsTests
             sp.P.SessionCtr.OnSubcribeFacOK += OnMCEventReceived;
             sp.Subscribe("com");
             sp.Subscribe("fac");
+            sp.P.SaveProfile();
+            Thread.Sleep(5000);
+            sp.P.UploadProfile();
 
 
         
+
+
 
 
 
