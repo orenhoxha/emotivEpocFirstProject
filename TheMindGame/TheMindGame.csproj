@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Bomb.cs" />
     <Compile Include="CharacterSelection.cs">
       <SubType>Form</SubType>
     </Compile>

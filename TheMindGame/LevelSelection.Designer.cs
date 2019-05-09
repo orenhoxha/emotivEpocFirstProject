@@ -219,6 +219,7 @@
             this.Name = "LevelSelection";
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "TheMindMaze";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.LevelSelection_FormClosed);
             ((System.ComponentModel.ISupportInitialize)(this.titlePictureBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.arrowDown)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.arrowUp)).EndInit();

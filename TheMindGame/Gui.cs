@@ -11,8 +11,24 @@ using System.Windows.Forms;
 
 namespace TheMindGame
 {
+    
+
     public partial class Gui : Form
     {
+        public class BombAnimationStruct
+        {
+            public Coordinate coord;
+            public int cmp;
+
+            public BombAnimationStruct(Coordinate coord, int cmp)
+            {
+                this.coord = coord;
+                this.cmp = cmp;
+            }
+        }
+
+        private GameEventArgs gameState; 
+
         private int winTick = 0;
         private PictureBox winPictureBox;
         private bool isMovingUP = false;
@@ -20,20 +36,35 @@ namespace TheMindGame
         private bool isMovingDOWN = false;
         private bool isMovingRIGHT = false;
 
+        private List<System.Windows.Forms.Timer> bombTimers;
+        private Dictionary<Bomb, Timer> bombTimerDict;
+        private Dictionary<Timer, int> timerSizeDict;
+        private Dictionary<Timer, BombAnimationStruct> explosionTimerDict;
+
         private Image[] imgs;
         Image currentImage;
 
         Image blockImage = Image.FromFile(Path.Combine(Program.resourcesPath, "block.png"));
+        Image unbreakableBlockImage = Image.FromFile(Path.Combine(Program.resourcesPath, "unbreakable_block.png"));
         Image teleportImage = Image.FromFile(Path.Combine(Program.resourcesPath, "teleport.png"));
         Image exitImage = Image.FromFile(Path.Combine(Program.resourcesPath, "exit.png"));
-
+        Image activatedBombImage = Image.FromFile(Path.Combine(Program.resourcesPath, "bomb_activated.png"));
+        Image desactivatedBombImage = Image.FromFile(Path.Combine(Program.resourcesPath, "bomb.png"));
+        Image explosionImage = Image.FromFile(Path.Combine(Program.resourcesPath, "explosion.png"));
         private Game game;
+
         public Gui(Game game)
         {
+            gameState = GameEventArgs.START;
             this.game = game;
             game.OnGameEventReceived += this.OnDraw;
             LoadCharactersImages();
             currentImage = imgs[0];
+            bombTimers = new List<Timer>();
+            bombTimerDict = new Dictionary<Bomb, Timer>();
+            timerSizeDict = new Dictionary<Timer, int>();
+            explosionTimerDict = new Dictionary<Timer, BombAnimationStruct>();
+
             InitializeComponent();
 
         }
@@ -54,15 +85,17 @@ namespace TheMindGame
             switch (args)
             {
                case GameEventArgs.START:
+                    gameState = GameEventArgs.START;
                     int width = game.Map.Width;
                     int height = game.Map.Height;
                     ClientSize = new System.Drawing.Size(width * 40, height * 40);
                     break;
                 case GameEventArgs.DRAW:
+                    gameState = GameEventArgs.DRAW;
                     Invalidate();
                     break;
                 case GameEventArgs.WIN:
-                    
+                    gameState = GameEventArgs.WIN;
 
                     timerDOWN.Stop();
                     timerUP.Stop();
@@ -75,35 +108,145 @@ namespace TheMindGame
                     KeyUp -= Gui_KeyUp;
 
                     timerWIN.Start();
+                    break;
+                case GameEventArgs.STARTBOMBTIMER:
 
+                    Timer timer = new Timer();
+                    timer.Interval = 5000;
+                    timer.Tick += new EventHandler(bombTimer_Tick);
+
+                    bombTimers.Add(timer);
+
+
+                    Timer animationTimer = new Timer();
+                    animationTimer.Interval = 650;
+                    animationTimer.Tick += new EventHandler(bombAnimationTimer_Tick);
+
+                    bombTimerDict.Add(game.ActivatedBombs[game.ActivatedBombs.Count -1], animationTimer);
+                    timerSizeDict.Add(animationTimer, 2);
+
+                    timer.Enabled = true;
+                    animationTimer.Enabled = true;
                     break;
             }
 
 
         }
 
-        
+
+        private void bombAnimationTimer_Tick(object sender, EventArgs e)
+        {
+            Timer timer = (Timer)sender;
+            if(timer.Interval > 50)
+                timer.Interval -= 50;
+
+
+            timerSizeDict[timer] = (timerSizeDict[timer] + 1) % 3;
+
+
+
+            Invalidate();
+        }
+
+        private void bombTimer_Tick(object sender, EventArgs e)
+        {
+
+            Timer timer = new Timer();
+            timer.Interval = 50;
+            timer.Tick += new EventHandler(explosionTimer_Tick);
+            explosionTimerDict.Add(timer, new BombAnimationStruct(game.ActivatedBombs[0].Coord, 0));
+
+            timer.Enabled = true;
+
+
+
+
+            bombTimers[0].Enabled = false;
+            bombTimers.RemoveAt(0);
+
+
+            bombTimerDict[game.ActivatedBombs[0]].Enabled = false;
+            timerSizeDict.Remove(bombTimerDict[game.ActivatedBombs[0]]);
+            bombTimerDict.Remove(game.ActivatedBombs[0]);
+            
+
+
+            game.exploseBomb();
+        }
+
+        private void explosionTimer_Tick(object sender, EventArgs e)
+        {
+            
+            Timer timer = (Timer)sender;
+            
+            
+            Console.WriteLine(explosionTimerDict[timer].cmp);
+            explosionTimerDict[timer].cmp++;
+            Console.WriteLine(explosionTimerDict[timer].cmp);
+            if (explosionTimerDict[timer].cmp >= 3)
+            {
+                
+                timer.Enabled = false;
+                explosionTimerDict.Remove(timer);
+            }
+
+            Invalidate();
+        }
+
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            base.OnPaint(e);
+                base.OnPaint(e);
                 int width = game.Map.Width;
                 int height = game.Map.Height;
-                for (int y = 0; y < height; y++)
+
+            List<Bomb> bombs = game.Map.Bombs;
+            foreach (Bomb b in bombs)
+            {
+                
+                if (b.IsActivated)
+                    e.Graphics.DrawImage(activatedBombImage, new Point(b.Coord.X * 40, b.Coord.Y * 40));
+                
+                else
+                    e.Graphics.DrawImage(desactivatedBombImage, new Point(b.Coord.X * 40, b.Coord.Y * 40));
+                
+
+            }
+
+            List<Bomb> activatedBombs = game.ActivatedBombs;
+            foreach (Bomb b in activatedBombs)
+            {
+                if (b.IsActivated)
+                    e.Graphics.DrawImage(activatedBombImage, new Rectangle(b.Coord.X * 40 + 5*(2 - timerSizeDict[bombTimerDict[b]]), 
+                                                                              b.Coord.Y * 40 + 5*(2 - timerSizeDict[bombTimerDict[b]]), 
+
+                                                                              20 + 10 * timerSizeDict[bombTimerDict[b]], 20 + 10 * timerSizeDict[bombTimerDict[b]]));
+                else
+                    e.Graphics.DrawImage(desactivatedBombImage, new Point(b.Coord.X * 40, b.Coord.Y * 40));
+
+            }
+
+            foreach(Teleporter t in game.Map.Teleporters)
+            {
+                e.Graphics.DrawImage(teleportImage, new Point(t.X * 40, t.Y * 40));
+            }
+
+            for (int y = 0; y < height; y++)
                 {
                     for (int x = 0; x < width; x++)
                     {
                         switch (game.Map.tileTypeAt(x, y))
                         {
                             case TileType.WALL:
-                                e.Graphics.DrawImage(blockImage, new Point(x * 40, y * 40));
+                                if(((Wall)game.Map.tileAt(x, y)).IsBreakable)
+                                    e.Graphics.DrawImage(blockImage, new Point(x * 40, y * 40));
+                                else
+                                     e.Graphics.DrawImage(unbreakableBlockImage, new Point(x * 40, y * 40));
                                 break;
                             case TileType.EXIT:
                                 e.Graphics.DrawImage(exitImage, new Point(x * 40, y * 40));
                                 break;
-                            case TileType.TELEPORTER:
-                                e.Graphics.DrawImage(teleportImage, new Point(x * 40, y * 40));
-                                break;
+                            
                             default:
                                 break;
                         }
@@ -111,6 +254,38 @@ namespace TheMindGame
                 }
                 if(currentImage != null)
                     e.Graphics.DrawImage(currentImage, new Point(game.Player.X * 10, game.Player.Y * 10));
+
+
+
+                foreach(KeyValuePair<Timer, BombAnimationStruct> item in explosionTimerDict)
+            {
+                Coordinate c = item.Value.coord;
+
+                int radius = item.Value.cmp;
+
+                int sx = c.X - radius;
+                int fx = c.X + radius;
+                int sy = c.Y - radius;
+                int fy = c.Y + radius;
+
+                for (int x = sx; x <= fx; x++)
+                {
+                    for (int y = sy; y < fy; y++)
+                    {
+
+                        if (x < width && y < height && x >= 0 && y >= 0)
+                        {
+
+                            e.Graphics.DrawImage(explosionImage, new Point(x * 40, y * 40));
+
+
+                        }
+
+
+                    }
+                }
+            }
+
             }
 
 
@@ -124,31 +299,38 @@ namespace TheMindGame
                     currentImage = imgs[3];
                     isMovingUP = true;
                     game.move(MovingDirection.UP);
-                    timerUP.Start();
+                    if(! (gameState == GameEventArgs.WIN))
+                        timerUP.Start();
                     break;
                 case Keys.Down:
                     if (isMovingDOWN) return;
                     currentImage = imgs[0];
                     isMovingDOWN = true;
                     game.move(MovingDirection.DOWN);
-                    timerDOWN.Start();
+                    if (!(gameState == GameEventArgs.WIN))
+                        timerDOWN.Start();
                     break;
                 case Keys.Left:
                     if (isMovingLEFT) return;
                     currentImage = imgs[1];
                     isMovingLEFT = true;
                     game.move(MovingDirection.LEFT);
-                    timerLEFT.Start();
+                    if (!(gameState == GameEventArgs.WIN))
+                        timerLEFT.Start();
                     break;
                 case Keys.Right:
                     if (isMovingRIGHT) return;
                     currentImage = imgs[2];
                     isMovingRIGHT = true;
                     game.move(MovingDirection.RIGHT);
-                    timerRIGHT.Start();
+                    if (!(gameState == GameEventArgs.WIN))
+                        timerRIGHT.Start();
+                    break;
+                case Keys.B:
+                    game.PutBomb();
                     break;
             }
-            //CHECK WIN
+            
         }
 
         private void Gui_KeyUp(object sender, KeyEventArgs e)
@@ -219,6 +401,11 @@ namespace TheMindGame
                 timerWIN.Stop();
             }
             winTick++;
+        }
+
+        private void Gui_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            this.Dispose();
         }
     }
 }

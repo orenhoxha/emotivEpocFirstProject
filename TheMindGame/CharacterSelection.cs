@@ -104,5 +104,10 @@ namespace TheMindGame
             this.Dispose();
 
         }
+
+        private void CharacterSelection_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Application.Exit();
+        }
     }
 }

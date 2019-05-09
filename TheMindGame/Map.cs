@@ -12,6 +12,7 @@ namespace TheMindGame
 
         private Tile[, ] map;
         private List<Teleporter> teleporters;
+        private List<Bomb> bombs;
         private int width;
         private int height;
 
@@ -31,6 +32,24 @@ namespace TheMindGame
             }
         }
 
+        public List<Bomb> Bombs
+        {
+            get
+            {
+                return bombs;
+            }
+        }
+
+        public List<Teleporter> Teleporters
+        {
+            get
+            {
+                return teleporters;
+            }
+
+            
+        }
+
         public Map(string mapPath, Player player)
         {
             string line;
@@ -42,7 +61,7 @@ namespace TheMindGame
             height = System.Convert.ToInt32(sHeight);
             map = new Tile[Width, Height];
             teleporters = new List<Teleporter>();
-
+            bombs = new List<Bomb>();
       
 
             
@@ -69,18 +88,23 @@ namespace TheMindGame
                         case '#':
                             map[x, y] = new Wall(x, y);
                             break;
+                        case '$':
+                            map[x, y] = new Wall(x, y, false);
+                            break;
                         default:
                             map[x, y] = new Empty(x, y);
                             break;
+                        
+                            
                     }
                 }
                
             }
 
-
-            while((line = f.ReadLine()) != null)
+            int nbTeleporters = System.Convert.ToInt32(f.ReadLine());
+            for(int i = 0; i < nbTeleporters; i++)
             {
-
+                line = f.ReadLine();
                 
                 string[] tmp = line.Split(',');
 
@@ -88,14 +112,25 @@ namespace TheMindGame
                     System.Convert.ToInt32(tmp[2]), System.Convert.ToInt32(tmp[3]));
 
                 teleporters.Add(t);
-                map[t.X, t.Y] = t;
 
                 t = new Teleporter(System.Convert.ToInt32(tmp[2]), System.Convert.ToInt32(tmp[3]),
                     System.Convert.ToInt32(tmp[0]), System.Convert.ToInt32(tmp[1]));
 
                 teleporters.Add(t);
-                map[t.X, t.Y] = t;
             }
+
+            int nbBombs = System.Convert.ToInt32(f.ReadLine());
+            for (int i = 0; i < nbBombs; i++)
+            {
+                line = f.ReadLine();
+
+                string[] tmp = line.Split(',');
+
+                Bomb b = new Bomb(System.Convert.ToInt32(tmp[0]), System.Convert.ToInt32(tmp[1]));
+                Bombs.Add(b);
+            }
+
+
         }
 
 
@@ -107,6 +142,64 @@ namespace TheMindGame
         public Tile tileAt(int x, int y)
         {
             return map[x, y];
+        }
+
+        public Bomb bombAt(Coordinate c)
+        {
+            foreach (Bomb b in bombs)
+            {
+                if (b.Coord.Compare(c) == 0)
+                    return b;
+            }
+
+            return null;
+        }
+
+        public void removeBomb(Bomb b)
+        {
+            bombs.Remove(b);
+        }
+
+
+        public void destroyInRadius(Coordinate c, int radius)
+        {
+
+
+            int sx = c.X - (radius -1);
+            int fx = c.X + (radius -1);
+            int sy = c.Y - (radius - 1);
+            int fy = c.Y + (radius - 1);
+
+            for (int x = sx; x <= fx; x++)
+            {
+                for (int y = sy; y < fy; y++)
+                {
+
+                    if (x < width && y < height && x >= 0 && y >= 0)
+                    {
+
+                        if (map[x, y].getType() == TileType.WALL && ((Wall)map[x, y]).IsBreakable)
+                            map[x, y] = new Empty(x, y);
+
+
+                    }
+
+
+                }
+            }
+
+
+        }
+
+        public Teleporter teleporterAt(int x, int y)
+        {
+
+            foreach(Teleporter t in teleporters)
+            {
+                if (t.Pos.Compare(new Coordinate(x, y)) == 0) return t;
+
+            }
+            return null;
         }
 
     }

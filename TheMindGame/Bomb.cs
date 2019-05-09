@@ -6,15 +6,20 @@ using System.Threading.Tasks;
 
 namespace TheMindGame
 {
-    class Player
+    class Bomb
     {
         private Coordinate coord;
-        private List<Bomb> bombs;
+        private bool isActivated;
+        private int radius;
 
-        public Player()
+
+        public Bomb(int x, int y)
         {
-            bombs = new List<Bomb>();
+            this.Coord = new Coordinate(x, y);
+            IsActivated = false;
+            Radius = 3;
         }
+
         public Coordinate Coord
         {
             get
@@ -28,47 +33,30 @@ namespace TheMindGame
             }
         }
 
-        public void setCoord(Coordinate c)
-        {
-            coord = new Coordinate(c);
-        }
-
-        public void setCoord(int x, int y)
-        {
-            coord = new Coordinate(x, y);
-        }
-
-        public int X
+        public bool IsActivated
         {
             get
             {
-                return Coord.X;
+                return isActivated;
             }
 
-            
-           
+            set
+            {
+                isActivated = value;
+            }
         }
 
-        public int Y
+        public int Radius
         {
             get
             {
-                return Coord.Y;
+                return radius;
             }
 
-            
-        }
-
-        internal List<Bomb> Bombs
-        {
-            get
+            set
             {
-                return bombs;
+                radius = value;
             }
-
-
         }
-
-
     }
 }

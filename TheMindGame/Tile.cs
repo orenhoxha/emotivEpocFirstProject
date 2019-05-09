@@ -40,7 +40,7 @@ namespace TheMindGame
 
         public abstract TileType getType();
 
-        protected Coordinate Pos
+        public Coordinate Pos
         {
             get
             {
@@ -91,10 +91,30 @@ namespace TheMindGame
 
     public class Wall : Tile
     {
+        private bool isBreakable;
+
         public Wall(int x, int y) : base(x, y, false)
         {
-
+            isBreakable = true;
         }
+        public Wall(int x, int y, bool isBreakable) : base(x, y, false)
+        {
+            this.isBreakable = isBreakable;
+        }
+
+        public bool IsBreakable
+        {
+            get
+            {
+                return isBreakable;
+            }
+
+            set
+            {
+                isBreakable = value;
+            }
+        }
+
         override
         public TileType getType()
         {

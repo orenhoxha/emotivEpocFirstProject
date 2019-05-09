@@ -128,6 +128,7 @@
             this.Name = "CharacterSelection";
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "CharacterSelection";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.CharacterSelection_FormClosed);
             ((System.ComponentModel.ISupportInitialize)(this.arrowLeft)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.arrowRight)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxRight)).EndInit();

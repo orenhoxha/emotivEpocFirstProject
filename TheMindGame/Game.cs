@@ -14,7 +14,7 @@ namespace TheMindGame
 
     public enum GameEventArgs
     {
-        START, DRAW, WIN
+        START, DRAW, WIN, STARTBOMBTIMER
     }
 
 
@@ -24,6 +24,7 @@ namespace TheMindGame
 
         private Player player;
         private Map map;
+        private List<Bomb> activatedBombs;
 
         internal Player Player
         {
@@ -43,9 +44,20 @@ namespace TheMindGame
             }
         }
 
+        internal List<Bomb> ActivatedBombs
+        {
+            get
+            {
+                return activatedBombs;
+            }
+
+            
+        }
+
         public Game()
         {
             player = new TheMindGame.Player();
+            activatedBombs = new List<Bomb>();
 
             map = new Map(TheMindGame.LevelSelection.selectedlevelPath, Player);
 
@@ -89,7 +101,7 @@ namespace TheMindGame
                     break;
             }
 
-
+            takeBomb();
         }
 
         private void move(int dX, int dY, int dx1, int dy1, int dx2, int dy2)
@@ -108,12 +120,15 @@ namespace TheMindGame
             Coordinate c = new Coordinate(Player.X + dX, Player.Y + dY);
             tmp1 = toTileCoordinate(c);
 
-            if (Map.tileAt(tmp1.X, tmp1.Y).getType() == TileType.TELEPORTER && (c.X % 4) == 0 && (c.Y % 4) == 0)
+
+            Teleporter t = map.teleporterAt(tmp1.X, tmp1.Y);
+            if ( t != null && (c.X % 4) == 0 && (c.Y % 4) == 0)
             {
-                Teleporter t = (Teleporter)Map.tileAt(tmp1.X, tmp1.Y);
+
                 Coordinate dest = t.Destination;
                 Player.setCoord(dest.X * 4, dest.Y * 4);
             }
+
             else if (Map.tileAt(tmp1.X,tmp2.Y).getType() == TileType.EXIT && (c.X % 4) == 0 && (c.Y % 4) == 0)
             {
                 Player.setCoord(Player.X + dX, Player.Y + dY);
@@ -125,5 +140,65 @@ namespace TheMindGame
 
             OnGameEventReceived(this, GameEventArgs.DRAW);
         }
+
+
+        private void takeBomb()
+        {
+            Bomb b = map.bombAt(toTileCoordinate(player.Coord));
+            if (b != null)
+            {
+                map.removeBomb(b);
+                player.Bombs.Add(b);
+
+
+            }
+        }
+
+
+
+
+
+        public void PutBomb()
+        {
+            List<Bomb> playerBombs = player.Bombs;
+
+            if (playerBombs != null && playerBombs.Count > 0)
+            {
+
+                Bomb bomb = playerBombs[0];
+                bomb.Coord = toTileCoordinate(player.Coord);
+                playerBombs.RemoveAt(0);
+
+                bomb.IsActivated = true;
+                ActivatedBombs.Add(bomb);
+                OnGameEventReceived(this, GameEventArgs.STARTBOMBTIMER);
+                OnGameEventReceived(this, GameEventArgs.DRAW);
+
+                //todo: activate the bomb and lauch a timer
+
+
+
+
+            }
+        }
+
+        public void exploseBomb()
+        {
+            Bomb bomb = activatedBombs[0];
+            activatedBombs.RemoveAt(0);
+
+            Map.destroyInRadius(bomb.Coord, bomb.Radius);
+
+            OnGameEventReceived(this, GameEventArgs.DRAW);
+        }
+
     }
+
+
+
+
 }
+
+
+
+

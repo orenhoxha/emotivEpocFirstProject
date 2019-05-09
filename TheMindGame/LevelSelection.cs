@@ -13,7 +13,7 @@ namespace TheMindGame
 {
     public partial class LevelSelection : Form
     {
-
+        private bool exitApplication = true;
         public static string selectedlevelPath;
          
         private static string levelsPath = Path.Combine(Program.resourcesPath, "levels");
@@ -115,6 +115,7 @@ namespace TheMindGame
         {
             Program.mainMenu.Location = this.Location;
             Program.mainMenu.Visible = true;
+            exitApplication = false;
             this.Dispose();
         }
 
@@ -190,15 +191,32 @@ namespace TheMindGame
         private void startButton_Click(object sender, EventArgs e)
         {
             selectedlevelPath = allLevelsPath[selectedLevel];
+            try
+            {
+                Game game = new TheMindGame.Game();
+                Gui gui = new TheMindGame.Gui(game);
 
-            Game game = new TheMindGame.Game();
-            Gui gui = new TheMindGame.Gui(game);
+                game.start();
+                gui.Location = this.Location;
+                gui.ShowDialog();
 
-            game.start();
-            gui.Location = this.Location;
-            gui.ShowDialog();
+            }
+            catch(Exception exception)
+            {
+                Console.WriteLine(exception);
+                return;
+            }
+            
 
             
+
+            
+
+        }
+
+        private void LevelSelection_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            if(exitApplication) Application.Exit();
 
         }
     }

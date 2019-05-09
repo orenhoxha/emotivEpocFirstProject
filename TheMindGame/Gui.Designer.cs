@@ -75,6 +75,7 @@
             this.Name = "Gui";
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "Gui";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Gui_FormClosed);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Gui_KeyDown);
             this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.Gui_KeyUp);
             this.ResumeLayout(false);
