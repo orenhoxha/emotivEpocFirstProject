@@ -107,7 +107,7 @@ namespace TheMindGame
             arrowDown.Location = new Point(arrowX, pictureBox5.Location.Y + pictureBox5.Height + 30);
             arrowUp.Location = new Point(arrowX, pictureBox1.Location.Y - 30 - arrowUp.Height);
 
-            titlePictureBox.Location = new Point(selectedLevelPictureBox.Location.X + (selectedLevelPictureBox.Width - titlePictureBox.Width) / 2, 20);
+            titlePictureBox.Location = new Point(selectedLevelPictureBox.Location.X + (selectedLevelPictureBox.Width - titlePictureBox.Width) / 2, 60);
 
         }
 

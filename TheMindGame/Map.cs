@@ -112,11 +112,7 @@ namespace TheMindGame
                     System.Convert.ToInt32(tmp[2]), System.Convert.ToInt32(tmp[3]));
 
                 teleporters.Add(t);
-
-                t = new Teleporter(System.Convert.ToInt32(tmp[2]), System.Convert.ToInt32(tmp[3]),
-                    System.Convert.ToInt32(tmp[0]), System.Convert.ToInt32(tmp[1]));
-
-                teleporters.Add(t);
+                
             }
 
             int nbBombs = System.Convert.ToInt32(f.ReadLine());
@@ -172,7 +168,7 @@ namespace TheMindGame
 
             for (int x = sx; x <= fx; x++)
             {
-                for (int y = sy; y < fy; y++)
+                for (int y = sy; y <= fy; y++)
                 {
 
                     if (x < width && y < height && x >= 0 && y >= 0)

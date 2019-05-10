@@ -270,7 +270,7 @@ namespace TheMindGame
 
                 for (int x = sx; x <= fx; x++)
                 {
-                    for (int y = sy; y < fy; y++)
+                    for (int y = sy; y <= fy; y++)
                     {
 
                         if (x < width && y < height && x >= 0 && y >= 0)
@@ -358,21 +358,25 @@ namespace TheMindGame
 
         private void timerLEFT_Tick(object sender, EventArgs e)
         {
+           // currentImage = imgs[1];
             game.move(MovingDirection.LEFT);
         }
 
         private void timerRIGHT_Tick(object sender, EventArgs e)
         {
+            //currentImage = imgs[2];
             game.move(MovingDirection.RIGHT);
         }
 
         private void timerDOWN_Tick(object sender, EventArgs e)
         {
+            //currentImage = imgs[0];
             game.move(MovingDirection.DOWN);
         }
 
         private void timerUP_Tick(object sender, EventArgs e)
         {
+            //currentImage = imgs[3];
             game.move(MovingDirection.UP);
         }
 

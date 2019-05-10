@@ -13,7 +13,7 @@ namespace TheMindGame
 {
     public partial class CharacterSelection : Form
     {
-
+        private bool exitApplication = true;
         private List<string> allCharactersPath;
         private int currPos = 1;
 
@@ -100,14 +100,17 @@ namespace TheMindGame
             MainMenu.selectedCharacterPath = allCharactersPath[currPos];
             Program.mainMenu.Location = this.Location;
             Program.mainMenu.Visible = true;
-            
+
+            exitApplication = false;
             this.Dispose();
 
         }
 
         private void CharacterSelection_FormClosed(object sender, FormClosedEventArgs e)
         {
-            Application.Exit();
+
+            if(exitApplication) Application.Exit();
+
         }
     }
 }
