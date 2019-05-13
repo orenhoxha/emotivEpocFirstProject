@@ -72,7 +72,7 @@ namespace TheMindGame
 
         private Coordinate toTileCoordinate(Coordinate c)
         {
-            return new Coordinate(c.X / 4, c.Y / 4);
+            return new Coordinate(c.X / Utils.MOVES_PER_TILE, c.Y / Utils.MOVES_PER_TILE);
                 
         }
 
@@ -88,16 +88,16 @@ namespace TheMindGame
             switch (direction)
             {
                 case MovingDirection.LEFT:
-                    move(-1, 0, -1, 0, -1, 3);
+                    move(-1, 0, -1, 0, -1, Utils.MOVES_PER_TILE-1);
                     break;
                 case MovingDirection.RIGHT:
-                    move(1, 0, 4, 0, 4, 3);
+                    move(1, 0, Utils.MOVES_PER_TILE, 0, Utils.MOVES_PER_TILE, Utils.MOVES_PER_TILE-1);
                     break;
                 case MovingDirection.DOWN:
-                    move(0, 1, 0, 4, 3, 4);
+                    move(0, 1, 0, Utils.MOVES_PER_TILE, Utils.MOVES_PER_TILE-1, Utils.MOVES_PER_TILE);
                     break;
                 case MovingDirection.UP:
-                    move(0, -1, 0, -1, 3, -1);
+                    move(0, -1, 0, -1, Utils.MOVES_PER_TILE-1, -1);
                     break;
             }
 
@@ -122,14 +122,14 @@ namespace TheMindGame
 
 
             Teleporter t = map.teleporterAt(tmp1.X, tmp1.Y);
-            if ( t != null && (c.X % 4) == 0 && (c.Y % 4) == 0)
+            if ( t != null && (c.X % Utils.MOVES_PER_TILE) == 0 && (c.Y % Utils.MOVES_PER_TILE) == 0)
             {
 
                 Coordinate dest = t.Destination;
-                Player.setCoord(dest.X * 4, dest.Y * 4);
+                Player.setCoord(dest.X * Utils.MOVES_PER_TILE, dest.Y * Utils.MOVES_PER_TILE);
             }
 
-            else if (Map.tileAt(tmp1.X,tmp2.Y).getType() == TileType.EXIT && (c.X % 4) == 0 && (c.Y % 4) == 0)
+            else if (Map.tileAt(tmp1.X,tmp2.Y).getType() == TileType.EXIT && (c.X % Utils.MOVES_PER_TILE) == 0 && (c.Y % Utils.MOVES_PER_TILE) == 0)
             {
                 Player.setCoord(Player.X + dX, Player.Y + dY);
                 OnGameEventReceived(this, GameEventArgs.WIN);

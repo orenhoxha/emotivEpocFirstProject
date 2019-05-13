@@ -43,7 +43,7 @@ namespace TheMindGame
             CharacterSelection characterSelection = new CharacterSelection(allCharactersPath);
             characterSelection.Location = this.Location;
             this.Visible = false;
-            characterSelection.ShowDialog();
+            characterSelection.Show();
         }
 
         private void MainMenu_VisibleChanged(object sender, EventArgs e)
@@ -69,7 +69,7 @@ namespace TheMindGame
             LevelSelection levelSelection = new LevelSelection();
             levelSelection.Location = this.Location;
             this.Visible = false;
-            levelSelection.ShowDialog();
+            levelSelection.Show();
         }
     }
 }

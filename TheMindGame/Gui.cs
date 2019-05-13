@@ -27,6 +27,7 @@ namespace TheMindGame
             }
         }
 
+        private LevelSelection levelSelectionForm;
         private GameEventArgs gameState; 
 
         private int winTick = 0;
@@ -53,8 +54,9 @@ namespace TheMindGame
         Image explosionImage = Image.FromFile(Path.Combine(Program.resourcesPath, "explosion.png"));
         private Game game;
 
-        public Gui(Game game)
+        public Gui(Game game, LevelSelection levelSelectionForm)
         {
+            this.levelSelectionForm = levelSelectionForm;
             gameState = GameEventArgs.START;
             this.game = game;
             game.OnGameEventReceived += this.OnDraw;
@@ -66,6 +68,14 @@ namespace TheMindGame
             explosionTimerDict = new Dictionary<Timer, BombAnimationStruct>();
 
             InitializeComponent();
+
+
+            timerDOWN.Interval = Utils.PLAYER_SPEED;
+            timerUP.Interval = Utils.PLAYER_SPEED;
+            timerRIGHT.Interval = Utils.PLAYER_SPEED;
+            timerLEFT.Interval = Utils.PLAYER_SPEED;
+
+
 
         }
 
@@ -88,7 +98,11 @@ namespace TheMindGame
                     gameState = GameEventArgs.START;
                     int width = game.Map.Width;
                     int height = game.Map.Height;
-                    ClientSize = new System.Drawing.Size(width * 40, height * 40);
+                    ClientSize = new System.Drawing.Size(width * Utils.TILE_SIZE, height * Utils.TILE_SIZE);
+
+                    bombNumberImagePB.Location = new Point(this.Width / 2 - (bombNumberImagePB.Width + bombNumberPB.Width)/2, 0);
+                    bombNumberPB.Location = new Point(bombNumberImagePB.Location.X + bombNumberImagePB.Width, 0);
+
                     break;
                 case GameEventArgs.DRAW:
                     gameState = GameEventArgs.DRAW;
@@ -108,6 +122,7 @@ namespace TheMindGame
                     KeyUp -= Gui_KeyUp;
 
                     timerWIN.Start();
+                    
                     break;
                 case GameEventArgs.STARTBOMBTIMER:
 
@@ -180,9 +195,7 @@ namespace TheMindGame
             Timer timer = (Timer)sender;
             
             
-            Console.WriteLine(explosionTimerDict[timer].cmp);
             explosionTimerDict[timer].cmp++;
-            Console.WriteLine(explosionTimerDict[timer].cmp);
             if (explosionTimerDict[timer].cmp >= 3)
             {
                 
@@ -199,16 +212,16 @@ namespace TheMindGame
                 base.OnPaint(e);
                 int width = game.Map.Width;
                 int height = game.Map.Height;
-
+            
             List<Bomb> bombs = game.Map.Bombs;
             foreach (Bomb b in bombs)
             {
                 
                 if (b.IsActivated)
-                    e.Graphics.DrawImage(activatedBombImage, new Point(b.Coord.X * 40, b.Coord.Y * 40));
+                    e.Graphics.DrawImage(activatedBombImage, new Point(b.Coord.X * Utils.TILE_SIZE, b.Coord.Y * Utils.TILE_SIZE));
                 
                 else
-                    e.Graphics.DrawImage(desactivatedBombImage, new Point(b.Coord.X * 40, b.Coord.Y * 40));
+                    e.Graphics.DrawImage(desactivatedBombImage, new Rectangle(b.Coord.X * Utils.TILE_SIZE, b.Coord.Y * Utils.TILE_SIZE, Utils.TILE_SIZE, Utils.TILE_SIZE));
                 
 
             }
@@ -217,34 +230,41 @@ namespace TheMindGame
             foreach (Bomb b in activatedBombs)
             {
                 if (b.IsActivated)
-                    e.Graphics.DrawImage(activatedBombImage, new Rectangle(b.Coord.X * 40 + 5*(2 - timerSizeDict[bombTimerDict[b]]), 
-                                                                              b.Coord.Y * 40 + 5*(2 - timerSizeDict[bombTimerDict[b]]), 
+                    e.Graphics.DrawImage(activatedBombImage, new Rectangle(b.Coord.X * Utils.TILE_SIZE + 5*(2 - timerSizeDict[bombTimerDict[b]]), 
+                                                                              b.Coord.Y * Utils.TILE_SIZE + 5*(2 - timerSizeDict[bombTimerDict[b]]),
 
-                                                                              20 + 10 * timerSizeDict[bombTimerDict[b]], 20 + 10 * timerSizeDict[bombTimerDict[b]]));
+                                                                              Utils.TILE_SIZE-20 + 10 * timerSizeDict[bombTimerDict[b]], 
+                                                                              Utils.TILE_SIZE-20 + 10 * timerSizeDict[bombTimerDict[b]]));
                 else
-                    e.Graphics.DrawImage(desactivatedBombImage, new Point(b.Coord.X * 40, b.Coord.Y * 40));
+                    e.Graphics.DrawImage(desactivatedBombImage, new Point(b.Coord.X * Utils.TILE_SIZE, b.Coord.Y * Utils.TILE_SIZE));
 
             }
 
-            foreach(Teleporter t in game.Map.Teleporters)
+
+            
+            foreach (Teleporter t in game.Map.Teleporters)
             {
-                e.Graphics.DrawImage(teleportImage, new Point(t.X * 40, t.Y * 40));
+                Rectangle rect = new Rectangle(t.X * Utils.TILE_SIZE, t.Y * Utils.TILE_SIZE, Utils.TILE_SIZE, Utils.TILE_SIZE);
+                e.Graphics.DrawImage(teleportImage, rect);// new Point(t.X * Utils.TILE_SIZE, t.Y * Utils.TILE_SIZE));
             }
 
             for (int y = 0; y < height; y++)
                 {
                     for (int x = 0; x < width; x++)
                     {
-                        switch (game.Map.tileTypeAt(x, y))
+
+                    Rectangle rect = new Rectangle(x * Utils.TILE_SIZE, y * Utils.TILE_SIZE, Utils.TILE_SIZE, Utils.TILE_SIZE );
+                    switch (game.Map.tileTypeAt(x, y))
                         {
                             case TileType.WALL:
-                                if(((Wall)game.Map.tileAt(x, y)).IsBreakable)
-                                    e.Graphics.DrawImage(blockImage, new Point(x * 40, y * 40));
-                                else
-                                     e.Graphics.DrawImage(unbreakableBlockImage, new Point(x * 40, y * 40));
+                            if (((Wall)game.Map.tileAt(x, y)).IsBreakable)
+                                e.Graphics.DrawImage(blockImage, rect);// new Point(x * Utils.TILE_SIZE, y * Utils.TILE_SIZE));
+
+                            else
+                                e.Graphics.DrawImage(unbreakableBlockImage, rect);// new Point(x * Utils.TILE_SIZE, y * Utils.TILE_SIZE));
                                 break;
                             case TileType.EXIT:
-                                e.Graphics.DrawImage(exitImage, new Point(x * 40, y * 40));
+                                e.Graphics.DrawImage(exitImage, rect);// new Point(x * Utils.TILE_SIZE, y * Utils.TILE_SIZE));
                                 break;
                             
                             default:
@@ -253,7 +273,7 @@ namespace TheMindGame
                     }
                 }
                 if(currentImage != null)
-                    e.Graphics.DrawImage(currentImage, new Point(game.Player.X * 10, game.Player.Y * 10));
+                    e.Graphics.DrawImage(currentImage, new Rectangle(game.Player.X * Utils.TILE_SIZE/Utils.MOVES_PER_TILE, game.Player.Y * Utils.TILE_SIZE/Utils.MOVES_PER_TILE, Utils.TILE_SIZE, Utils.TILE_SIZE));
 
 
 
@@ -275,8 +295,8 @@ namespace TheMindGame
 
                         if (x < width && y < height && x >= 0 && y >= 0)
                         {
-
-                            e.Graphics.DrawImage(explosionImage, new Point(x * 40, y * 40));
+                            Rectangle rect = new Rectangle(x * Utils.TILE_SIZE, y * Utils.TILE_SIZE, Utils.TILE_SIZE, Utils.TILE_SIZE);
+                            e.Graphics.DrawImage(explosionImage, rect);// new Point(x * Utils.TILE_SIZE, y * Utils.TILE_SIZE));
 
 
                         }
@@ -285,9 +305,20 @@ namespace TheMindGame
                     }
                 }
             }
+            drawBombNumber();
+        }
 
-            }
+        private void drawBombNumber()
+        {
 
+            if (bombNumberPB.Image != null) bombNumberPB.Image.Dispose();
+            var image = new Bitmap(bombNumberPB.Width, bombNumberPB.Height);
+
+            var graphics = Graphics.FromImage(image);
+            var font = new Font("TimesNewRoman", 12, FontStyle.Regular);
+            graphics.DrawString("x" + game.Player.Bombs.Count, font, Brushes.Black, new Point(0, 6));
+            bombNumberPB.Image = image;
+        }
 
 
         private void Gui_KeyDown(object sender, KeyEventArgs e)
@@ -358,25 +389,25 @@ namespace TheMindGame
 
         private void timerLEFT_Tick(object sender, EventArgs e)
         {
-           // currentImage = imgs[1];
+            currentImage = imgs[1];
             game.move(MovingDirection.LEFT);
         }
 
         private void timerRIGHT_Tick(object sender, EventArgs e)
         {
-            //currentImage = imgs[2];
+            currentImage = imgs[2];
             game.move(MovingDirection.RIGHT);
         }
 
         private void timerDOWN_Tick(object sender, EventArgs e)
         {
-            //currentImage = imgs[0];
+            currentImage = imgs[0];
             game.move(MovingDirection.DOWN);
         }
 
         private void timerUP_Tick(object sender, EventArgs e)
         {
-            //currentImage = imgs[3];
+            currentImage = imgs[3];
             game.move(MovingDirection.UP);
         }
 
@@ -389,13 +420,13 @@ namespace TheMindGame
                 winPictureBox.BackgroundImage = imgs[3];
                 winPictureBox.BackgroundImageLayout = ImageLayout.Stretch;
                 winPictureBox.BackColor = Color.Transparent;
-                winPictureBox.Size = new Size(40, 40);
-                winPictureBox.Location = new Point(game.Player.X * 10, game.Player.Y * 10);
+                winPictureBox.Size = new Size(Utils.TILE_SIZE, Utils.TILE_SIZE);
+                winPictureBox.Location = new Point(game.Player.X * Utils.TILE_SIZE / Utils.MOVES_PER_TILE, game.Player.Y * Utils.TILE_SIZE/Utils.MOVES_PER_TILE);
                 this.Controls.Add(winPictureBox);
 
             }
 
-            winPictureBox.Size = new Size(40 - 10 * winTick, 40 - 10 * winTick);
+            winPictureBox.Size = new Size(Utils.TILE_SIZE - 10 * winTick, Utils.TILE_SIZE - 10 * winTick);
             if(winTick != 0)
                 winPictureBox.Location = new Point(winPictureBox.Location.X +5, winPictureBox.Location.Y + 5);
 
@@ -403,6 +434,8 @@ namespace TheMindGame
             {
                 winTick = 0;
                 timerWIN.Stop();
+
+                handleWin();
             }
             winTick++;
         }
@@ -410,6 +443,66 @@ namespace TheMindGame
         private void Gui_FormClosed(object sender, FormClosedEventArgs e)
         {
             this.Dispose();
+        }
+
+
+        private void handleWin()
+        {
+            //loadLevel(0);
+            //exitApplication();
+            //restart();
+            //showWinMessage("                       You won");
+            backToLevelSelection();
+
+        }
+
+        private void backToLevelSelection()
+        {
+            this.Dispose();
+        }
+
+        private void showWinMessage(string message)
+        {
+            PictureBox p = new PictureBox();
+            p.Width = this.Width;
+            p.Height = this.Height;
+            this.Controls.Add(p);
+            p.BackColor = Color.Transparent;
+
+            p.Location = new Point(0, 0);
+
+            var image = new Bitmap(p.Width, p.Height);
+            var font = new Font("TimesNewRoman", 25, FontStyle.Bold, GraphicsUnit.Pixel);
+            var graphics = Graphics.FromImage(image);
+            graphics.DrawString(message, font, Brushes.Aqua, new Point(0, p.Height/2 -20));
+
+           // p.ImageLayout = ImageLayout.Stretch;
+            p.Image = image;
+
+        }
+
+
+
+        private void exitApplication()
+        {
+            Application.Exit();
+        }
+
+        private void loadLevel(int n)
+        {
+
+            if (n == -1 || levelSelectionForm.setSelectedLevel(n))
+            {
+                this.Dispose();
+                levelSelectionForm.startButton.PerformClick();
+                
+            }
+
+        }
+
+        private void restart()
+        {
+            loadLevel(-1);
         }
     }
 }

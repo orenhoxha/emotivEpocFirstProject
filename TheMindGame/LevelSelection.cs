@@ -24,13 +24,26 @@ namespace TheMindGame
 
         private PictureBox[] boxes = new PictureBox[6];
 
+        public int SelectedLevel
+        {
+            get
+            {
+                return selectedLevel;
+            }
+
+            set
+            {
+                selectedLevel = value;
+            }
+        }
+
         public LevelSelection()
         {
             InitializeComponent();
             this.ClientSize = new System.Drawing.Size(1200, 800);
             allLevelsPath = new List<string>();
             currPos = 0;
-            selectedLevel = 0;
+            SelectedLevel = 0;
             boxes[0] = pictureBox1;
             boxes[1] = pictureBox2;
             boxes[2] = pictureBox3;
@@ -50,7 +63,7 @@ namespace TheMindGame
 
             if(selectedLevelPictureBox.BackgroundImage != null)
                 selectedLevelPictureBox.BackgroundImage.Dispose();
-            selectedLevelPictureBox.BackgroundImage = Image.FromFile(Path.Combine(allLevelsPath[selectedLevel], "image.png"));
+            selectedLevelPictureBox.BackgroundImage = Image.FromFile(Path.Combine(allLevelsPath[SelectedLevel], "image.png"));
             
             arrowUp.Visible = (currPos == 0) ? false : true;
             arrowDown.Visible = (currPos + 6 >= allLevelsPath.Count) ? false : true;
@@ -138,7 +151,7 @@ namespace TheMindGame
             int selected = currPos + x;
             if (selected < 0 || selected >= allLevelsPath.Count) return;
 
-            selectedLevel = selected;
+            SelectedLevel = selected;
             updateView();
         }
 
@@ -188,17 +201,24 @@ namespace TheMindGame
             o.Location = new Point(o.Location.X + 13, o.Location.Y + 9);
         }
 
+        public bool setSelectedLevel(int n)
+        {
+            if (n < 0 || n >= allLevelsPath.Count) return false;
+            selectedLevel = n;  
+            return true;
+        }
+
         private void startButton_Click(object sender, EventArgs e)
         {
-            selectedlevelPath = allLevelsPath[selectedLevel];
+            selectedlevelPath = allLevelsPath[SelectedLevel];
             try
             {
                 Game game = new TheMindGame.Game();
-                Gui gui = new TheMindGame.Gui(game);
+                Gui gui = new TheMindGame.Gui(game, this);
 
                 game.start();
                 gui.Location = this.Location;
-                gui.ShowDialog();
+                gui.Show();
 
             }
             catch(Exception exception)

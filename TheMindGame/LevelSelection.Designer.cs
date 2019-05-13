@@ -245,7 +245,6 @@
         #endregion
 
         private System.Windows.Forms.PictureBox selectedLevelPictureBox;
-        private System.Windows.Forms.Button startButton;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.PictureBox pictureBox2;
         private System.Windows.Forms.PictureBox pictureBox3;
@@ -255,5 +254,6 @@
         private System.Windows.Forms.PictureBox arrowUp;
         private System.Windows.Forms.PictureBox arrowDown;
         private System.Windows.Forms.PictureBox titlePictureBox;
+        public System.Windows.Forms.Button startButton;
     }
 }

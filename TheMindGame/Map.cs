@@ -82,7 +82,7 @@ namespace TheMindGame
                              map[x, y] = new Exit(x, y);
                              break;
                         case 'X':
-                            player.setCoord(x*4, y*4);
+                            player.setCoord(x* Utils.MOVES_PER_TILE, y* Utils.MOVES_PER_TILE);
                             map[x, y] = new Empty(x, y);
                             break;
                         case '#':
