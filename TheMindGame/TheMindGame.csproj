@@ -156,6 +156,19 @@
   <ItemGroup>
     <None Include="Resources\bomb.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\stageSelectionBackground.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CortexAccessUtils\CortexAccessUtils.csproj">
+      <Project>{9450a8b8-ee71-4840-a9e9-9584c788e4e9}</Project>
+      <Name>CortexAccessUtils</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CortexAccess\CortexAccess.csproj">
+      <Project>{83e06d8b-c6c9-43e5-ae5d-ca1b2388ef1e}</Project>
+      <Name>CortexAccess</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -72,7 +72,7 @@
             this.arrowDown.Cursor = System.Windows.Forms.Cursors.Hand;
             this.arrowDown.Location = new System.Drawing.Point(822, 621);
             this.arrowDown.Name = "arrowDown";
-            this.arrowDown.Size = new System.Drawing.Size(90, 90);
+            this.arrowDown.Size = new System.Drawing.Size(70, 70);
             this.arrowDown.TabIndex = 9;
             this.arrowDown.TabStop = false;
             this.arrowDown.Click += new System.EventHandler(this.arrowDown_Click);
@@ -85,7 +85,7 @@
             this.arrowUp.Cursor = System.Windows.Forms.Cursors.Hand;
             this.arrowUp.Location = new System.Drawing.Point(822, 12);
             this.arrowUp.Name = "arrowUp";
-            this.arrowUp.Size = new System.Drawing.Size(90, 90);
+            this.arrowUp.Size = new System.Drawing.Size(70, 70);
             this.arrowUp.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.arrowUp.TabIndex = 8;
             this.arrowUp.TabStop = false;
@@ -207,6 +207,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.DarkRed;
             this.BackgroundImage = global::TheMindGame.Properties.Resources.stageSelectionBackground;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(1184, 761);

@@ -22,8 +22,6 @@ namespace TheMindGame
             {
                 return pos.X;
             }
-
-         
         }
         public int Y
         {
@@ -31,12 +29,7 @@ namespace TheMindGame
             {
                 return pos.Y;
             }
-
-
         }
-
-
-
 
         public abstract TileType getType();
 

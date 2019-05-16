@@ -11,7 +11,7 @@ using System.Windows.Forms;
 
 namespace TheMindGame
 {
-    
+
 
     public partial class Gui : Form
     {
@@ -28,7 +28,7 @@ namespace TheMindGame
         }
 
         private LevelSelection levelSelectionForm;
-        private GameEventArgs gameState; 
+        private GameEventArgs gameState;
 
         private int winTick = 0;
         private PictureBox winPictureBox;
@@ -91,16 +91,16 @@ namespace TheMindGame
 
         public void OnDraw(object sender, GameEventArgs args)
         {
-            
+
             switch (args)
             {
-               case GameEventArgs.START:
+                case GameEventArgs.START:
                     gameState = GameEventArgs.START;
                     int width = game.Map.Width;
                     int height = game.Map.Height;
                     ClientSize = new System.Drawing.Size(width * Utils.TILE_SIZE, height * Utils.TILE_SIZE);
 
-                    bombNumberImagePB.Location = new Point(this.Width / 2 - (bombNumberImagePB.Width + bombNumberPB.Width)/2, 0);
+                    bombNumberImagePB.Location = new Point(this.Width / 2 - (bombNumberImagePB.Width + bombNumberPB.Width) / 2, 0);
                     bombNumberPB.Location = new Point(bombNumberImagePB.Location.X + bombNumberImagePB.Width, 0);
 
                     break;
@@ -122,7 +122,7 @@ namespace TheMindGame
                     KeyUp -= Gui_KeyUp;
 
                     timerWIN.Start();
-                    
+
                     break;
                 case GameEventArgs.STARTBOMBTIMER:
 
@@ -137,7 +137,7 @@ namespace TheMindGame
                     animationTimer.Interval = 650;
                     animationTimer.Tick += new EventHandler(bombAnimationTimer_Tick);
 
-                    bombTimerDict.Add(game.ActivatedBombs[game.ActivatedBombs.Count -1], animationTimer);
+                    bombTimerDict.Add(game.ActivatedBombs[game.ActivatedBombs.Count - 1], animationTimer);
                     timerSizeDict.Add(animationTimer, 2);
 
                     timer.Enabled = true;
@@ -152,7 +152,7 @@ namespace TheMindGame
         private void bombAnimationTimer_Tick(object sender, EventArgs e)
         {
             Timer timer = (Timer)sender;
-            if(timer.Interval > 50)
+            if (timer.Interval > 50)
                 timer.Interval -= 50;
 
 
@@ -183,7 +183,7 @@ namespace TheMindGame
             bombTimerDict[game.ActivatedBombs[0]].Enabled = false;
             timerSizeDict.Remove(bombTimerDict[game.ActivatedBombs[0]]);
             bombTimerDict.Remove(game.ActivatedBombs[0]);
-            
+
 
 
             game.exploseBomb();
@@ -191,14 +191,14 @@ namespace TheMindGame
 
         private void explosionTimer_Tick(object sender, EventArgs e)
         {
-            
+
             Timer timer = (Timer)sender;
-            
-            
+
+
             explosionTimerDict[timer].cmp++;
             if (explosionTimerDict[timer].cmp >= 3)
             {
-                
+
                 timer.Enabled = false;
                 explosionTimerDict.Remove(timer);
             }
@@ -209,20 +209,20 @@ namespace TheMindGame
 
         protected override void OnPaint(PaintEventArgs e)
         {
-                base.OnPaint(e);
-                int width = game.Map.Width;
-                int height = game.Map.Height;
-            
+            base.OnPaint(e);
+            int width = game.Map.Width;
+            int height = game.Map.Height;
+
             List<Bomb> bombs = game.Map.Bombs;
             foreach (Bomb b in bombs)
             {
-                
+
                 if (b.IsActivated)
                     e.Graphics.DrawImage(activatedBombImage, new Point(b.Coord.X * Utils.TILE_SIZE, b.Coord.Y * Utils.TILE_SIZE));
-                
+
                 else
                     e.Graphics.DrawImage(desactivatedBombImage, new Rectangle(b.Coord.X * Utils.TILE_SIZE, b.Coord.Y * Utils.TILE_SIZE, Utils.TILE_SIZE, Utils.TILE_SIZE));
-                
+
 
             }
 
@@ -230,18 +230,18 @@ namespace TheMindGame
             foreach (Bomb b in activatedBombs)
             {
                 if (b.IsActivated)
-                    e.Graphics.DrawImage(activatedBombImage, new Rectangle(b.Coord.X * Utils.TILE_SIZE + 5*(2 - timerSizeDict[bombTimerDict[b]]), 
-                                                                              b.Coord.Y * Utils.TILE_SIZE + 5*(2 - timerSizeDict[bombTimerDict[b]]),
+                    e.Graphics.DrawImage(activatedBombImage, new Rectangle(b.Coord.X * Utils.TILE_SIZE + 5 * (2 - timerSizeDict[bombTimerDict[b]]),
+                                                                              b.Coord.Y * Utils.TILE_SIZE + 5 * (2 - timerSizeDict[bombTimerDict[b]]),
 
-                                                                              Utils.TILE_SIZE-20 + 10 * timerSizeDict[bombTimerDict[b]], 
-                                                                              Utils.TILE_SIZE-20 + 10 * timerSizeDict[bombTimerDict[b]]));
+                                                                              Utils.TILE_SIZE - 20 + 10 * timerSizeDict[bombTimerDict[b]],
+                                                                              Utils.TILE_SIZE - 20 + 10 * timerSizeDict[bombTimerDict[b]]));
                 else
                     e.Graphics.DrawImage(desactivatedBombImage, new Point(b.Coord.X * Utils.TILE_SIZE, b.Coord.Y * Utils.TILE_SIZE));
 
             }
 
 
-            
+
             foreach (Teleporter t in game.Map.Teleporters)
             {
                 Rectangle rect = new Rectangle(t.X * Utils.TILE_SIZE, t.Y * Utils.TILE_SIZE, Utils.TILE_SIZE, Utils.TILE_SIZE);
@@ -249,35 +249,35 @@ namespace TheMindGame
             }
 
             for (int y = 0; y < height; y++)
+            {
+                for (int x = 0; x < width; x++)
                 {
-                    for (int x = 0; x < width; x++)
-                    {
 
-                    Rectangle rect = new Rectangle(x * Utils.TILE_SIZE, y * Utils.TILE_SIZE, Utils.TILE_SIZE, Utils.TILE_SIZE );
+                    Rectangle rect = new Rectangle(x * Utils.TILE_SIZE, y * Utils.TILE_SIZE, Utils.TILE_SIZE, Utils.TILE_SIZE);
                     switch (game.Map.tileTypeAt(x, y))
-                        {
-                            case TileType.WALL:
+                    {
+                        case TileType.WALL:
                             if (((Wall)game.Map.tileAt(x, y)).IsBreakable)
                                 e.Graphics.DrawImage(blockImage, rect);// new Point(x * Utils.TILE_SIZE, y * Utils.TILE_SIZE));
 
                             else
                                 e.Graphics.DrawImage(unbreakableBlockImage, rect);// new Point(x * Utils.TILE_SIZE, y * Utils.TILE_SIZE));
-                                break;
-                            case TileType.EXIT:
-                                e.Graphics.DrawImage(exitImage, rect);// new Point(x * Utils.TILE_SIZE, y * Utils.TILE_SIZE));
-                                break;
-                            
-                            default:
-                                break;
-                        }
+                            break;
+                        case TileType.EXIT:
+                            e.Graphics.DrawImage(exitImage, rect);// new Point(x * Utils.TILE_SIZE, y * Utils.TILE_SIZE));
+                            break;
+
+                        default:
+                            break;
                     }
                 }
-                if(currentImage != null)
-                    e.Graphics.DrawImage(currentImage, new Rectangle(game.Player.X * Utils.TILE_SIZE/Utils.MOVES_PER_TILE, game.Player.Y * Utils.TILE_SIZE/Utils.MOVES_PER_TILE, Utils.TILE_SIZE, Utils.TILE_SIZE));
+            }
+            if (currentImage != null)
+                e.Graphics.DrawImage(currentImage, new Rectangle(game.Player.X * Utils.TILE_SIZE / Utils.MOVES_PER_TILE, game.Player.Y * Utils.TILE_SIZE / Utils.MOVES_PER_TILE, Utils.TILE_SIZE, Utils.TILE_SIZE));
 
 
 
-                foreach(KeyValuePair<Timer, BombAnimationStruct> item in explosionTimerDict)
+            foreach (KeyValuePair<Timer, BombAnimationStruct> item in explosionTimerDict)
             {
                 Coordinate c = item.Value.coord;
 
@@ -323,6 +323,8 @@ namespace TheMindGame
 
         private void Gui_KeyDown(object sender, KeyEventArgs e)
         {
+
+            
             switch (e.KeyCode)
             {
                 case Keys.Up:
@@ -330,7 +332,7 @@ namespace TheMindGame
                     currentImage = imgs[3];
                     isMovingUP = true;
                     game.move(MovingDirection.UP);
-                    if(! (gameState == GameEventArgs.WIN))
+                    if (!(gameState == GameEventArgs.WIN))
                         timerUP.Start();
                     break;
                 case Keys.Down:
@@ -361,7 +363,7 @@ namespace TheMindGame
                     game.PutBomb();
                     break;
             }
-            
+
         }
 
         private void Gui_KeyUp(object sender, KeyEventArgs e)
@@ -413,7 +415,7 @@ namespace TheMindGame
 
         private void timerWIN_Tick(object sender, EventArgs e)
         {
-            if(winTick == 0)
+            if (winTick == 0)
             {
                 currentImage = null;
                 winPictureBox = new PictureBox();
@@ -421,14 +423,14 @@ namespace TheMindGame
                 winPictureBox.BackgroundImageLayout = ImageLayout.Stretch;
                 winPictureBox.BackColor = Color.Transparent;
                 winPictureBox.Size = new Size(Utils.TILE_SIZE, Utils.TILE_SIZE);
-                winPictureBox.Location = new Point(game.Player.X * Utils.TILE_SIZE / Utils.MOVES_PER_TILE, game.Player.Y * Utils.TILE_SIZE/Utils.MOVES_PER_TILE);
+                winPictureBox.Location = new Point(game.Player.X * Utils.TILE_SIZE / Utils.MOVES_PER_TILE, game.Player.Y * Utils.TILE_SIZE / Utils.MOVES_PER_TILE);
                 this.Controls.Add(winPictureBox);
 
             }
 
             winPictureBox.Size = new Size(Utils.TILE_SIZE - 10 * winTick, Utils.TILE_SIZE - 10 * winTick);
-            if(winTick != 0)
-                winPictureBox.Location = new Point(winPictureBox.Location.X +5, winPictureBox.Location.Y + 5);
+            if (winTick != 0)
+                winPictureBox.Location = new Point(winPictureBox.Location.X + 5, winPictureBox.Location.Y + 5);
 
             if (winTick == 4)
             {
@@ -474,9 +476,9 @@ namespace TheMindGame
             var image = new Bitmap(p.Width, p.Height);
             var font = new Font("TimesNewRoman", 25, FontStyle.Bold, GraphicsUnit.Pixel);
             var graphics = Graphics.FromImage(image);
-            graphics.DrawString(message, font, Brushes.Aqua, new Point(0, p.Height/2 -20));
+            graphics.DrawString(message, font, Brushes.Aqua, new Point(0, p.Height / 2 - 20));
 
-           // p.ImageLayout = ImageLayout.Stretch;
+            // p.ImageLayout = ImageLayout.Stretch;
             p.Image = image;
 
         }
@@ -495,7 +497,7 @@ namespace TheMindGame
             {
                 this.Dispose();
                 levelSelectionForm.startButton.PerformClick();
-                
+
             }
 
         }

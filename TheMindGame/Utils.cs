@@ -8,8 +8,9 @@ namespace TheMindGame
 {
     class Utils
     {
-        public static int PLAYER_SPEED = 80;//SHUOLD be > 0
-        public static int TILE_SIZE = 40;//SHOULD be > 0
-        public static int MOVES_PER_TILE = 4;// SHOULD be > 0
+        //########## SHOULD BE > 0 ###########
+        public static int PLAYER_SPEED = 40;
+        public static int TILE_SIZE = 40;
+        public static int MOVES_PER_TILE = 8;
     }
 }

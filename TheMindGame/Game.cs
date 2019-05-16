@@ -110,6 +110,7 @@ namespace TheMindGame
 
             tmp1 = toTileCoordinate(new Coordinate(Player.X + dx1, Player.Y + dy1));
             tmp2 = toTileCoordinate(new Coordinate(Player.X + dx2, Player.Y + dy2));
+
             if (outOfMap(tmp1) || outOfMap(tmp2) ||
                 !Map.tileAt(tmp1.X, tmp1.Y).IsTraversable || !Map.tileAt(tmp2.X, tmp2.Y).IsTraversable)
             {
@@ -120,11 +121,10 @@ namespace TheMindGame
             Coordinate c = new Coordinate(Player.X + dX, Player.Y + dY);
             tmp1 = toTileCoordinate(c);
 
-
             Teleporter t = map.teleporterAt(tmp1.X, tmp1.Y);
+
             if ( t != null && (c.X % Utils.MOVES_PER_TILE) == 0 && (c.Y % Utils.MOVES_PER_TILE) == 0)
             {
-
                 Coordinate dest = t.Destination;
                 Player.setCoord(dest.X * Utils.MOVES_PER_TILE, dest.Y * Utils.MOVES_PER_TILE);
             }
@@ -149,8 +149,6 @@ namespace TheMindGame
             {
                 map.removeBomb(b);
                 player.Bombs.Add(b);
-
-
             }
         }
 
@@ -168,16 +166,11 @@ namespace TheMindGame
                 Bomb bomb = playerBombs[0];
                 bomb.Coord = toTileCoordinate(player.Coord);
                 playerBombs.RemoveAt(0);
-
                 bomb.IsActivated = true;
                 ActivatedBombs.Add(bomb);
+
                 OnGameEventReceived(this, GameEventArgs.STARTBOMBTIMER);
                 OnGameEventReceived(this, GameEventArgs.DRAW);
-
-                //todo: activate the bomb and lauch a timer
-
-
-
 
             }
         }

@@ -401,7 +401,7 @@ namespace CortexAccess
                             }
                             else if (item["met"] != null) // Performance Metrics
                             {
-                                Console.WriteLine("OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
+                               
                                 ArrayList metChannelLists = new ArrayList();
                                 JArray cols = (JArray)item["met"]["cols"];
                                 foreach (var chanItem in cols)

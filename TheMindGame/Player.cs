@@ -44,9 +44,6 @@ namespace TheMindGame
             {
                 return Coord.X;
             }
-
-            
-           
         }
 
         public int Y
@@ -55,8 +52,6 @@ namespace TheMindGame
             {
                 return Coord.Y;
             }
-
-            
         }
 
         internal List<Bomb> Bombs
@@ -65,8 +60,6 @@ namespace TheMindGame
             {
                 return bombs;
             }
-
-
         }
 
 

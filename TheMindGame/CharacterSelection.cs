@@ -26,7 +26,7 @@ namespace TheMindGame
 
 
             this.allCharactersPath = allCharactersPath;
-      
+
             updateView();
         }
 
@@ -93,7 +93,7 @@ namespace TheMindGame
             arrowLeft_Click(sender, e);
         }
 
-        
+
 
         private void selectCharacterOk_Click(object sender, EventArgs e)
         {
@@ -108,9 +108,7 @@ namespace TheMindGame
 
         private void CharacterSelection_FormClosed(object sender, FormClosedEventArgs e)
         {
-
-            if(exitApplication) Application.Exit();
-
+            if (exitApplication) Application.Exit();
         }
     }
 }

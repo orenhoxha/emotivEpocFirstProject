@@ -50,6 +50,7 @@ namespace TheMindGame
             boxes[3] = pictureBox4;
             boxes[4] = pictureBox5;
             boxes[5] = pictureBox6;
+
             initComponentPosition();
 
             loadLevelPaths();
@@ -74,7 +75,15 @@ namespace TheMindGame
                 {
                     if(boxes[i].BackgroundImage != null)
                         boxes[i].BackgroundImage.Dispose();
+
                     boxes[i].BackgroundImage = Image.FromFile(Path.Combine(allLevelsPath[currPos + i], "image.png"));
+
+                    if(boxes[i].Height == 166)
+                    {
+                        boxes[i].Size = new Size(222, 148);
+                        boxes[i].Location = new Point(boxes[i].Location.X + 13, boxes[i].Location.Y + 9);
+                    }
+
                     boxes[i].Visible = true;
                 }
                 else
@@ -83,8 +92,12 @@ namespace TheMindGame
                 }
             }
             
+            if(selectedLevelIsVisible())
+                resizeLevelBoxes(boxes[selectedLevel - currPos], false);
        
         }
+
+       
 
         private void loadLevelPaths()
         {
@@ -92,9 +105,8 @@ namespace TheMindGame
             DirectoryInfo[] charDirectoryInfos = charDirectoryInfo.GetDirectories();
 
             foreach (DirectoryInfo di in charDirectoryInfos)
-            {
                     allLevelsPath.Add(di.FullName);
-            }
+
         }
 
         private void initComponentPosition()
@@ -102,11 +114,11 @@ namespace TheMindGame
             int middleHeight = this.ClientSize.Height / 2;
             int middleWidth = this.ClientSize.Width / 2;
 
-            selectedLevelPictureBox.Location = new Point(50, middleHeight - (selectedLevelPictureBox.Height + 30 + startButton.Height) / 2);
-            startButton.Location = new Point(50 + (selectedLevelPictureBox.Width - startButton.Width) / 2,
+            selectedLevelPictureBox.Location = new Point(75, middleHeight - (selectedLevelPictureBox.Height + 30 + startButton.Height) / 2);
+            startButton.Location = new Point(75 + (selectedLevelPictureBox.Width - startButton.Width) / 2,
                                         selectedLevelPictureBox.Location.Y + selectedLevelPictureBox.Height + 30);
 
-            int x = this.ClientSize.Width - 50 - 2 * pictureBox1.Width - 30;
+            int x = this.ClientSize.Width - 75 - 2 * pictureBox1.Width - 30;
 
             pictureBox1.Location = new Point(x, middleHeight - (3 * pictureBox1.Height + 60) / 2);
             pictureBox3.Location = new Point(x, pictureBox1.Location.Y + pictureBox1.Height + 30);
@@ -116,12 +128,16 @@ namespace TheMindGame
             pictureBox4.Location = new Point(pictureBox3.Location.X + pictureBox3.Width + 30, pictureBox1.Location.Y + pictureBox1.Height + 30);
             pictureBox6.Location = new Point(pictureBox5.Location.X + pictureBox5.Width + 30, pictureBox3.Location.Y + pictureBox3.Height + 30);
 
-            int arrowX = this.ClientSize.Width - 50 - pictureBox1.Width - 15 - arrowDown.Width / 2;
-            arrowDown.Location = new Point(arrowX, pictureBox5.Location.Y + pictureBox5.Height + 30);
-            arrowUp.Location = new Point(arrowX, pictureBox1.Location.Y - 30 - arrowUp.Height);
+            int arrowX = this.ClientSize.Width - 75 - pictureBox1.Width - 15 - arrowDown.Width / 2;
+            arrowDown.Location = new Point(arrowX, pictureBox5.Location.Y + pictureBox5.Height + 15);
+            arrowUp.Location = new Point(arrowX, pictureBox1.Location.Y - 15 - arrowUp.Height);
 
             titlePictureBox.Location = new Point(selectedLevelPictureBox.Location.X + (selectedLevelPictureBox.Width - titlePictureBox.Width) / 2, 60);
 
+
+
+            pictureBox1.Size = new Size(249, 166);
+            pictureBox1.Location = new Point(pictureBox1.Location.X - 13, pictureBox1.Location.Y - 9);
         }
 
         private void titlePictureBox_Click(object sender, EventArgs e)
@@ -150,6 +166,11 @@ namespace TheMindGame
         {
             int selected = currPos + x;
             if (selected < 0 || selected >= allLevelsPath.Count) return;
+
+            
+            if(selectedLevel != selected && selectedLevelIsVisible())
+                resizeLevelBoxes(boxes[selectedLevel - currPos], true);
+            
 
             SelectedLevel = selected;
             updateView();
@@ -185,20 +206,30 @@ namespace TheMindGame
             levelClicked(5);
         }
 
-       
+       private bool selectedLevelIsVisible()
+        {
+            return currPos <= selectedLevel && selectedLevel < currPos + boxes.Length;
+        }
 
         private void pictureBox1_MouseEnter(object sender, EventArgs e)
         {
-            PictureBox o = (PictureBox)sender;
-            o.Size = new Size(249, 166);
-            o.Location = new Point(o.Location.X - 13, o.Location.Y - 9);
+            if ( selectedLevelIsVisible() && (PictureBox)sender == boxes[selectedLevel - currPos]) return;
+
+            resizeLevelBoxes((PictureBox)sender, false);
         }
 
         private void pictureBox1_MouseLeave(object sender, EventArgs e)
         {
-            PictureBox o = (PictureBox)sender;
-            o.Size = new Size(222, 148);
-            o.Location = new Point(o.Location.X + 13, o.Location.Y + 9);
+            if (selectedLevelIsVisible() && (PictureBox)sender == boxes[selectedLevel - currPos]) return;
+
+            resizeLevelBoxes((PictureBox)sender, true);
+        }
+
+        private void resizeLevelBoxes(PictureBox o,bool reduce)
+        {
+            o.Size = reduce ? new Size(222, 148) : new Size(249, 166);
+            o.Location = reduce ? new Point(o.Location.X + 13, o.Location.Y + 9) :
+                                    new Point(o.Location.X - 13, o.Location.Y - 9);
         }
 
         public bool setSelectedLevel(int n)
@@ -216,6 +247,8 @@ namespace TheMindGame
                 Game game = new TheMindGame.Game();
                 Gui gui = new TheMindGame.Gui(game, this);
 
+                gui.Text = allLevelsPath[SelectedLevel].Substring(allLevelsPath[SelectedLevel].LastIndexOf('\\') + 1);
+
                 game.start();
                 gui.Location = this.Location;
                 gui.Show();
@@ -226,11 +259,6 @@ namespace TheMindGame
                 Console.WriteLine(exception);
                 return;
             }
-            
-
-            
-
-            
 
         }
 

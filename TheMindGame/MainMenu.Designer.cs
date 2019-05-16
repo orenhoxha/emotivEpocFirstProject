@@ -68,7 +68,7 @@
             this.MaximizeBox = false;
             this.Name = "MainMenu";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "TheMindGame";
+            this.Text = "TheMindMaze";
             this.VisibleChanged += new System.EventHandler(this.MainMenu_VisibleChanged);
             this.ResumeLayout(false);
 
