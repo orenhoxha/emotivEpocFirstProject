@@ -31,7 +31,7 @@ namespace TheMindGame
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-
+            
             eegOutput = new FileStream(@"eegOutput.csv", FileMode.Append, FileAccess.Write);
             metOutput = new FileStream(@"metOutput.csv", FileMode.Append, FileAccess.Write);
             comOutput = new FileStream(@"comOutput.csv", FileMode.Append, FileAccess.Write);
@@ -40,19 +40,24 @@ namespace TheMindGame
             SimpleProcess sp = new SimpleProcess("ohoxha", "Password123", "636eb076-c25a-4970-9496-351a54464872", "OrenMental");
 
             
+            if(sp != null && sp.P != null)
+            {
+                sp.P.OnPerfDataReceived += OnMetEventReceived;
+                sp.P.SessionCtr.OnSubcribeMetOK += OnMetEventReceived;
 
-            sp.P.OnPerfDataReceived += OnMetEventReceived;
-            sp.P.SessionCtr.OnSubcribeMetOK += OnMetEventReceived;
+                sp.P.OnEEGDataReceived += OnEEGEventReceived;
+                sp.P.SessionCtr.OnSubcribeEEGOK += OnEEGEventReceived;
 
-            sp.P.OnEEGDataReceived += OnEEGEventReceived;
-            sp.P.SessionCtr.OnSubcribeEEGOK += OnEEGEventReceived;
-
-            sp.Subscribe("met");
-            //sp.Subscribe("eeg");
+                sp.Subscribe("met");
+                //sp.Subscribe("eeg");
+            }
 
 
-            Application.Run(mainMenu = new MainMenu(sp));
-            sp.Unsubscribe();
+
+            Application.Run(mainMenu = new MainMenu(null));
+
+            if (sp != null && sp.P != null)
+                sp.Unsubscribe();
 
             if(eegOutput != null)
                 eegOutput.Close();
@@ -60,7 +65,7 @@ namespace TheMindGame
                 metOutput.Close();
             if (comOutput != null)
                 comOutput.Close();
-
+                
         }
 
         private static void OnMetEventReceived(object sender, ArrayList data)

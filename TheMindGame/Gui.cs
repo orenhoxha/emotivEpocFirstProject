@@ -452,9 +452,9 @@ namespace TheMindGame
         {
             //loadLevel(0);
             //exitApplication();
-            //restart();
+            restart();
             //showWinMessage("                       You won");
-            backToLevelSelection();
+            //backToLevelSelection();
 
         }
 

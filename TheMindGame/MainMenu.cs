@@ -26,12 +26,15 @@ namespace TheMindGame
 
         public MainMenu(SimpleProcess sp)
         {
-            this.sp = sp;
-            sp.P.OnComDataReceived += OnMCEventReceived;
-            sp.P.SessionCtr.OnSubcribeComOK += OnSubscribeComOKventReceived;
-            
+            if(sp != null && sp.P != null)
+            {
+                this.sp = sp;
+                sp.P.OnComDataReceived += OnMCEventReceived;
+                sp.P.SessionCtr.OnSubcribeComOK += OnSubscribeComOKventReceived;
 
-            sp.Subscribe("com");
+                sp.Subscribe("com");
+            }
+            
            
 
 
